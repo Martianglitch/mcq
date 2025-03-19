@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GK Quiz for Class 4</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        body {
+    background: linear-gradient(90deg, #CDEDF6, #FFFAE5);
+    background-size: 300% 300%;
+    animation: gradientMove 10s infinite alternate;
+    text-align: center;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+/* Background Gradient Animation */
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+.quiz-container {
+    width: 80%;
+    margin: 30px auto;
+    padding: 20px;
+    background: #FFFAE5;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    animation: bounceIn 0.8s ease-in-out;
+}
+
+/* Bounce In Animation for Quiz Box */
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.question {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #3B82F6;
+}
+
+/* Button Animations */
+.option-btn {
+    padding: 12px;
+    width: 48%;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+    background-color: #7DD3FC;
+    border: 2px solid #C4B5FD;
+    font-family: cursive;
+    color: #1E3A8A;
+}
+
+/* Button Pop on Hover */
+.option-btn:hover {
+    background-color: #A7F3D0;
+    color: #1E3A8A;
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Flash Animation for Selected Button */
+.selected {
+    background-color: #FB7185 !important;
+    color: white;
+    border: 2px solid #F43F5E;
+    animation: flash 0.3s 2;
+}
+
+@keyframes flash {
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+/* Controls and Timer */
+.controls {
+    margin-top: 20px;
+}
+
+.btn {
+    font-size: 24px;
+    padding: 10px 20px;
+    background-color: #7DD3FC;
+    color: #1E3A8A;
+    border: 2px solid #C4B5FD;
+    border-radius: 10px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Button Wiggle on Hover */
+.btn:hover {
+    background-color: #A7F3D0;
+    transform: rotate(-3deg) scale(1.1);
+}
+
+/* Timer */
+.timer {
+    font-size: 26px;
+    font-weight: bold;
+    color: #F87171;
+    animation: pulse 1s infinite alternate;
+}
+
+/* Timer Pulse Effect */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.05);
+    }
+}
+
+.question-number {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+    color: #3B82F6;
+}
+
+/* Submit Button with Wiggle */
+#submitTest {
+    position: sticky;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #FB7185;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    transition: all 0.3s;
+}
+
+/* Wiggle on Hover */
+#submitTest:hover {
+    background-color: #F43F5E;
+    animation: wiggle 0.5s ease-in-out infinite;
+}
+
+/* Wiggle Animation */
+@keyframes wiggle {
+    0%, 100% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    25% {
+        transform: translate(-50%, -50%) rotate(-3deg);
+    }
+    50% {
+        transform: translate(-50%, -50%) rotate(3deg);
+    }
+    75% {
+        transform: translate(-50%, -50%) rotate(-3deg);
+    }
+}
+
+/* Result Page Animation */
+#resultPage {
+    display: none;
+    font-size: 20px;
+    text-align: left;
+    background-color: #FFFAE5;
+    padding: 20px;
+    border-radius: 10px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Fade In Animation for Results */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+<div id="quizContainer" class="quiz-container">
+    <h1 class="text-primary">Math</h1>
+    <hr>
+    <p class="question" id="question"></p>
+    <div class="options" id="options"></div>
+    <p class="mt-3"><h2>Time Left: <span class="timer" id="timer">60</span> sec</h2></p>
+
+    <div class="controls">
+        <button class="btn btn-secondary" onclick="prevQuestion()">Previous</button>
+        <button class="btn btn-danger" onclick="skipQuestion()">Skip</button>
+        <button class="btn btn-primary" onclick="nextQuestion()">Next</button>
+    </div>
+
+    <p class="question-number"><h1>Question <span id="current-q">1</span> of <span id="total-q">50</span></h1></p>
+</div>
+
+<div id="resultPage" class="quiz-container"></div>
+
+<button id="submitTest" onclick="submitTest()">Submit Test</button>
+
+<script>
+    let allQuestions = [
+    { question: "What move does 1. e4 represent?", options: ["Pawn to e4", "Knight to e4", "Bishop to e4", "Queen to e4"], answer: "Pawn to e4" },
+    { question: "What is the name of the opening after 1. e4 e5 2. Nf3 Nc6 3. Bb5?", options: ["Italian Game", "Sicilian Defense", "Ruy Lopez", "Queen's Gambit"], answer: "Ruy Lopez" },
+    { question: "What is the best response to 1. d4 d5 2. c4?", options: ["e6", "c6", "dxc4", "Nf6"], answer: "dxc4" },
+    { question: "After 1. e4 e5 2. Nf3 Nc6 3. Bc4, what is this opening called?", options: ["Ruy Lopez", "Italian Game", "Scotch Game", "Petrov Defense"], answer: "Italian Game" },
+    { question: "In the Sicilian Defense, what move follows 1. e4 c5?", options: ["d4", "Nf3", "Nc3", "f4"], answer: "Nf3" },
+    { question: "What is the purpose of 1. e4 c5 2. Nf3 d6?", options: ["To prepare d5", "To protect e5", "To develop the bishop", "To prevent d4"], answer: "To prevent d4" },
+    { question: "After 1. e4 e5 2. Nf3 Nc6 3. d4 exd4 4. Nxd4, what opening is this?", options: ["Scotch Game", "Ruy Lopez", "Italian Game", "Petrov Defense"], answer: "Scotch Game" },
+    { question: "What move completes queenside castling?", options: ["O-O", "O-O-O", "h3", "g3"], answer: "O-O-O" },
+    { question: "What is the best reply to 1. e4 e5 2. Nf3 Nf6?", options: ["d3", "Nc3", "Nxe5", "Bb5"], answer: "Nxe5" },
+    { question: "In the Caro-Kann Defense, what move follows 1. e4 c6?", options: ["d4", "Nc3", "Nf3", "d3"], answer: "d4" },
+    { question: "Which move signals the start of the King's Gambit?", options: ["e4 e5 2. f4", "d4 d5 2. e4", "c4 c5 2. Nf3", "f4 e5 2. d4"], answer: "e4 e5 2. f4" },
+    { question: "After 1. d4 Nf6 2. c4 e6 3. Nf3, what opening is this?", options: ["Queen's Gambit Declined", "King's Indian Defense", "Catalan Opening", "Benoni Defense"], answer: "Catalan Opening" },
+    { question: "Which move initiates the French Defense?", options: ["e4 e6", "d4 d5", "e4 c5", "e4 d6"], answer: "e4 e6" },
+    { question: "What move is common in the London System after 1. d4 d5?", options: ["Bf4", "e3", "c4", "Nc3"], answer: "Bf4" },
+    { question: "What move usually follows 1. e4 e5 2. Nf3 Nc6 3. Bb5 a6?", options: ["Ba4", "Bxc6", "d4", "O-O"], answer: "Ba4" },
+    { question: "After 1. e4 e5 2. Nf3 Nc6 3. d4 exd4, what is the best continuation?", options: ["Bb5", "Nxd4", "c3", "Bc4"], answer: "Nxd4" },
+    { question: "What move do you play in the Alekhine Defense after 1. e4 Nf6?", options: ["d3", "e5", "d4", "Nc3"], answer: "e5" },
+    { question: "In the Pirc Defense, what follows 1. e4 d6 2. d4 Nf6?", options: ["Nc3", "f3", "c4", "Bg5"], answer: "Nc3" },
+    { question: "What move follows in the Queen's Gambit after 1. d4 d5 2. c4?", options: ["dxc4", "c6", "e6", "Nc6"], answer: "dxc4" },
+    { question: "Which move initiates the Dutch Defense?", options: ["e4 e6", "d4 f5", "c4 f5", "d4 d5"], answer: "d4 f5" },
+    { question: "In the Scandinavian Defense, what follows 1. e4 d5?", options: ["exd5", "d4", "Nf3", "c4"], answer: "exd5" },
+    { question: "What move is played after 1. d4 Nf6 2. c4 g6?", options: ["Nc3", "d5", "e4", "g3"], answer: "Nc3" },
+    { question: "What move completes castling kingside?", options: ["O-O", "O-O-O", "e3", "h3"], answer: "O-O" },
+    { question: "In the Italian Game, what follows 1. e4 e5 2. Nf3 Nc6 3. Bc4?", options: ["Nf6", "Bc5", "d6", "a6"], answer: "Bc5" },
+    { question: "What is the purpose of 1. e4 e5 2. Nf3 d6?", options: ["To defend e5", "To develop a bishop", "To prepare castling", "To block the center"], answer: "To defend e5" },
+    { question: "Which move follows in the Sicilian Defense after 1. e4 c5 2. Nf3?", options: ["d6", "Nc6", "e6", "g6"], answer: "d6" },
+    { question: "What move is played after 1. d4 d5 2. c4 e6?", options: ["Nc3", "Nf3", "cxd5", "e3"], answer: "Nc3" },
+    { question: "What move signifies a pawn advance in the King's Indian Defense?", options: ["f3", "c4", "d5", "e4"], answer: "e4" },
+    { question: "In the Nimzo-Indian Defense, what follows 1. d4 Nf6 2. c4 e6 3. Nc3?", options: ["Bb4", "d5", "g6", "b6"], answer: "Bb4" },
+    { question: "What move follows in the English Opening after 1. c4 e5?", options: ["Nc3", "g3", "e3", "d4"], answer: "Nc3" },
+    { question: "In the Ruy Lopez, what is the purpose of 3. Bb5?", options: ["To pin the knight", "To control d4", "To defend e4", "To prepare castling"], answer: "To pin the knight" },
+    { question: "After 1. d4 d5 2. c4 e6 3. Nc3 Nf6, what is the most common move?", options: ["Bg5", "e3", "cxd5", "Nf3"], answer: "Nf3" },
+    { question: "What move initiates the King's Indian Attack?", options: ["e4", "d3", "Nf3", "g3"], answer: "Nf3" },
+    { question: "After 1. e4 c5 2. Nf3 Nc6 3. d4 cxd4, what is the best continuation?", options: ["Nxd4", "c3", "e5", "Bd3"], answer: "Nxd4" },
+    { question: "In the Benoni Defense, what move follows 1. d4 Nf6 2. c4 c5 3. d5?", options: ["d6", "e6", "g6", "b5"], answer: "e6" },
+    { question: "What move follows 1. d4 Nf6 2. c4 g6 3. Nc3 d5?", options: ["cxd5", "e3", "f3", "Bg5"], answer: "cxd5" },
+    { question: "What move follows in the Scandinavian Defense after 1. e4 d5 2. exd5 Qxd5?", options: ["Nc3", "d4", "Nf3", "c4"], answer: "Nc3" },
+    { question: "What is the best move after 1. e4 e5 2. Nf3 Nc6 3. Bb5 d6?", options: ["Bxc6", "Ba4", "O-O", "d4"], answer: "Ba4" },
+    { question: "What move initiates the Caro-Kann Defense?", options: ["e4 c6", "d4 d5", "e4 e5", "e4 c5"], answer: "e4 c6" },
+    { question: "What is the next move after 1. d4 d5 2. c4 c6?", options: ["Nf3", "e3", "cxd5", "Nc3"], answer: "Nc3" },
+    { question: "What is the purpose of 1. g3 in the opening?", options: ["To control the center", "To develop the bishop", "To prepare fianchetto", "To attack early"], answer: "To prepare fianchetto" },
+    { question: "In the King's Gambit, what is Black's best response to 1. e4 e5 2. f4?", options: ["exf4", "d5", "Nc6", "g5"], answer: "exf4" },
+    { question: "What is the follow-up to 1. c4 c5 in the Symmetrical Variation?", options: ["d4", "Nc3", "g3", "e3"], answer: "Nc3" },
+    { question: "In the Pirc Defense, what follows 1. e4 d6 2. d4 Nf6 3. Nc3?", options: ["g6", "e5", "c6", "f3"], answer: "g6" }
+];
+    
+
+    let questions = [];
+    let currentQuestion = 0;
+    let selectedAnswer = null;
+    let userAnswers = [];
+    let timer;
+    
+    function shuffleQuestions() {
+        questions = allQuestions.sort(() => Math.random() - 0.5).slice(0, 50);
+        loadQuestion();
+    }
+
+    function startTimer() {
+        let timeLeft = 60;
+        document.getElementById("timer").innerText = timeLeft;
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById("timer").innerText = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                nextQuestion();
+            }
+        }, 1000);
+    }
+
+    function loadQuestion() {
+        if (currentQuestion >= questions.length) {
+            submitTest();
+            return;
+        }
+
+        clearInterval(timer);
+        startTimer();
+
+        selectedAnswer = null;
+        document.getElementById("question").innerText = questions[currentQuestion].question;
+
+        const optionsContainer = document.getElementById("options");
+        optionsContainer.innerHTML = "";
+        questions[currentQuestion].options.forEach(option => {
+            const btn = document.createElement("button");
+            btn.className = "option-btn btn btn-warning";
+            btn.innerText = option;
+            btn.onclick = () => selectAnswer(btn, option);
+            optionsContainer.appendChild(btn);
+        });
+
+        document.getElementById("current-q").innerText = currentQuestion + 1;
+        document.getElementById("total-q").innerText = questions.length;
+    }
+
+    function selectAnswer(button, answer) {
+        document.querySelectorAll(".option-btn").forEach(btn => btn.classList.remove("selected"));
+        button.classList.add("selected");
+        userAnswers[currentQuestion] = answer;
+    }
+
+    function nextQuestion() {
+        if (currentQuestion < questions.length - 1) {
+            currentQuestion++;
+            loadQuestion();
+        } else {
+            submitTest();
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            loadQuestion();
+        }
+    }
+
+    function skipQuestion() {
+        nextQuestion();
+    }
+
+    function submitTest() {
+        clearInterval(timer);
+        let resultHTML = "<h2>Test Results</h2><ol>";
+        let score = 0;
+
+        userAnswers.forEach((answer, index) => {
+            let correctAnswer = questions[index].answer;
+            if (answer === correctAnswer) {
+                score++;
+            } else {
+                resultHTML += `<li><b>Q${index + 1}:</b> ${questions[index].question}<br>
+                                <span style="color: red;">Your Answer: ${answer || "Not Answered"}</span><br>
+                                <span style="color: green;">Correct Answer: ${correctAnswer}</span></li><br>`;
+            }
+        });
+
+        resultHTML += `</ol><h1>Your Score: ${score} / ${questions.length}</h1>`;
+        document.getElementById("quizContainer").style.display = "none";
+        document.getElementById("resultPage").innerHTML = resultHTML;
+        document.getElementById("resultPage").style.display = "block";
+    }
+
+    shuffleQuestions();
+</script>
+
+</body>
+</html>
