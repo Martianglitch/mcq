@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GK Quiz for Class 4</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        body {
+    background: linear-gradient(90deg, #CDEDF6, #FFFAE5);
+    background-size: 300% 300%;
+    animation: gradientMove 10s infinite alternate;
+    text-align: center;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+/* Background Gradient Animation */
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+.quiz-container {
+    width: 80%;
+    margin: 30px auto;
+    padding: 20px;
+    background: #FFFAE5;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    animation: bounceIn 0.8s ease-in-out;
+}
+
+/* Bounce In Animation for Quiz Box */
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.question {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #3B82F6;
+}
+
+/* Button Animations */
+.option-btn {
+    padding: 12px;
+    width: 48%;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+    background-color: #7DD3FC;
+    border: 2px solid #C4B5FD;
+    font-family: cursive;
+    color: #1E3A8A;
+}
+
+/* Button Pop on Hover */
+.option-btn:hover {
+    background-color: #A7F3D0;
+    color: #1E3A8A;
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Flash Animation for Selected Button */
+.selected {
+    background-color: #FB7185 !important;
+    color: white;
+    border: 2px solid #F43F5E;
+    animation: flash 0.3s 2;
+}
+
+@keyframes flash {
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+/* Controls and Timer */
+.controls {
+    margin-top: 20px;
+}
+
+.btn {
+    font-size: 24px;
+    padding: 10px 20px;
+    background-color: #7DD3FC;
+    color: #1E3A8A;
+    border: 2px solid #C4B5FD;
+    border-radius: 10px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Button Wiggle on Hover */
+.btn:hover {
+    background-color: #A7F3D0;
+    transform: rotate(-3deg) scale(1.1);
+}
+
+/* Timer */
+.timer {
+    font-size: 26px;
+    font-weight: bold;
+    color: #F87171;
+    animation: pulse 1s infinite alternate;
+}
+
+/* Timer Pulse Effect */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.05);
+    }
+}
+
+.question-number {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+    color: #3B82F6;
+}
+
+/* Submit Button with Wiggle */
+#submitTest {
+    position: sticky;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #FB7185;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    transition: all 0.3s;
+}
+
+/* Wiggle on Hover */
+#submitTest:hover {
+    background-color: #F43F5E;
+    animation: wiggle 0.5s ease-in-out infinite;
+}
+
+/* Wiggle Animation */
+@keyframes wiggle {
+    0%, 100% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    25% {
+        transform: translate(-50%, -50%) rotate(-3deg);
+    }
+    50% {
+        transform: translate(-50%, -50%) rotate(3deg);
+    }
+    75% {
+        transform: translate(-50%, -50%) rotate(-3deg);
+    }
+}
+
+/* Result Page Animation */
+#resultPage {
+    display: none;
+    font-size: 20px;
+    text-align: left;
+    background-color: #FFFAE5;
+    padding: 20px;
+    border-radius: 10px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Fade In Animation for Results */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+<div id="quizContainer" class="quiz-container">
+    <h1 class="text-primary">Daily Reasoning </h1>
+    <hr>
+    <p class="question" id="question"></p>
+    <div class="options" id="options"></div>
+    <p class="mt-3"><h2>Time Left: <span class="timer" id="timer">90</span> sec</h2></p>
+
+    <div class="controls">
+        <button class="btn btn-secondary" onclick="prevQuestion()">Previous</button>
+        <button class="btn btn-danger" onclick="skipQuestion()">Skip</button>
+        <button class="btn btn-primary" onclick="nextQuestion()">Next</button>
+    </div>
+
+    <p class="question-number"><h1>Question <span id="current-q">1</span> of <span id="total-q">50</span></h1></p>
+</div>
+
+<div id="resultPage" class="quiz-container"></div>
+
+<button id="submitTest" onclick="submitTest()">Submit Test</button>
+
+<script>
+    let allQuestions =  
+    [
+  { "question": "What comes next in the pattern? A, C, E, G, __?", "options": ["I", "H", "J", "K"], "answer": "I" },
+  { "question": "If 2 + 3 = 10 and 3 + 4 = 21, what is 4 + 5?", "options": ["25", "26", "27", "28"], "answer": "27" },
+  { "question": "A clock shows 3:15. What is the angle between the hour and minute hands?", "options": ["0°", "7.5°", "22.5°", "30°"], "answer": "7.5°" },
+  { "question": "Which word does not belong? Apple, Mango, Tomato, Banana", "options": ["Apple", "Mango", "Tomato", "Banana"], "answer": "Tomato" },
+  { "question": "What comes next? 1, 4, 9, 16, 25, __?", "options": ["30", "36", "49", "64"], "answer": "36" },
+  { "question": "Find the missing number: 2, 6, 12, 20, __?", "options": ["28", "30", "32", "36"], "answer": "30" },
+  { "question": "If a cat has four legs, how many legs do 3 cats have?", "options": ["6", "8", "10", "12"], "answer": "12" },
+  { "question": "How many months in a year have 28 days?", "options": ["1", "2", "11", "12"], "answer": "12" },
+  { "question": "What is the next letter in this series? B, D, F, H, __?", "options": ["I", "J", "K", "L"], "answer": "J" },
+  { "question": "What comes next in the pattern? 2, 4, 8, 16, __?", "options": ["24", "32", "36", "40"], "answer": "32" },
+  { "question": "How many sides does a pentagon have?", "options": ["3", "4", "5", "6"], "answer": "5" },
+  { "question": "If today is Monday, what day will it be in 10 days?", "options": ["Wednesday", "Thursday", "Friday", "Saturday"], "answer": "Thursday" },
+  { "question": "A farmer has 3 sheep, 4 goats, and 6 cows. How many legs are there in total?", "options": ["42", "46", "50", "52"], "answer": "50" },
+  { "question": "What is half of 8 plus 4?", "options": ["4", "6", "8", "10"], "answer": "8" },
+  { "question": "What number comes next? 100, 90, 80, 70, __?", "options": ["50", "55", "60", "65"], "answer": "60" },
+  { "question": "Find the odd one out: Sun, Moon, Star, Tree", "options": ["Sun", "Moon", "Star", "Tree"], "answer": "Tree" },
+  { "question": "A bat and a ball together cost ₹110. The bat costs ₹100 more than the ball. How much does the ball cost?", "options": ["₹5", "₹10", "₹20", "₹25"], "answer": "₹5" },
+  { "question": "Which number is missing? 2, 5, __, 11, 14", "options": ["6", "7", "8", "9"], "answer": "8" },
+  { "question": "What is the next number? 1, 3, 6, 10, 15, __?", "options": ["18", "20", "21", "22"], "answer": "21" },
+  { "question": "How many minutes are in 3 hours?", "options": ["120", "150", "180", "200"], "answer": "180" },
+  { "question": "What number comes next? 2, 10, 30, 68, __?", "options": ["100", "110", "120", "130"], "answer": "130" },
+  { "question": "If you rearrange the letters of 'LISTEN', you get:", "options": ["SILENT", "TINSEL", "ENLIST", "All of them"], "answer": "All of them" },
+  { "question": "Find the odd one out: Triangle, Rectangle, Square, Circle", "options": ["Triangle", "Rectangle", "Square", "Circle"], "answer": "Circle" },
+  { "question": "If 5 + 5 = 25, 6 + 6 = 36, what is 7 + 7?", "options": ["42", "45", "48", "49"], "answer": "49" },
+  { "question": "What is the missing letter? O, T, T, F, __?", "options": ["F", "S", "E", "N"], "answer": "F" },
+  { "question": "Which shape has no corners?", "options": ["Triangle", "Square", "Circle", "Rectangle"], "answer": "Circle" },
+  { "question": "Find the odd one out: Red, Green, Blue, Square", "options": ["Red", "Green", "Blue", "Square"], "answer": "Square" },
+  { "question": "What is half of 144?", "options": ["66", "72", "74", "80"], "answer": "72" },
+  { "question": "If a train travels at 60 km/h, how far does it travel in 2.5 hours?", "options": ["100 km", "120 km", "150 km", "180 km"], "answer": "150 km" },
+  { "question": "Find the missing number: 3, 6, 9, __, 15", "options": ["10", "11", "12", "13"], "answer": "12" },
+  { "question": "What is the next number? 5, 10, 20, 40, __?", "options": ["50", "60", "70", "80"], "answer": "80" },
+  { "question": "How many letters are in the English alphabet?", "options": ["24", "25", "26", "27"], "answer": "26" },
+  { "question": "If a triangle has 3 sides and a square has 4, how many sides does a hexagon have?", "options": ["5", "6", "7", "8"], "answer": "6" },
+  { "question": "What comes next in the pattern? Z, Y, X, W, __?", "options": ["V", "U", "T", "S"], "answer": "V" },
+  { "question": "If 3 birds sit on a tree and 2 fly away, how many are left?", "options": ["0", "1", "2", "3"], "answer": "1" },
+  { "question": "Find the odd one out: Pen, Pencil, Eraser, Chair", "options": ["Pen", "Pencil", "Eraser", "Chair"], "answer": "Chair" },
+  { "question": "Find the missing number: 1, 1, 2, 3, 5, __?", "options": ["6", "7", "8", "9"], "answer": "8" },
+  { "question": "If a spider has 8 legs, how many legs do 4 spiders have?", "options": ["24", "28", "30", "32"], "answer": "32" }
+
+];
+    
+
+    let questions = [];
+    let currentQuestion = 0;
+    let selectedAnswer = null;
+    let userAnswers = [];
+    let timer;
+    
+    function shuffleQuestions() {
+        questions = allQuestions.sort(() => Math.random() - 0.5).slice(0, 50);
+        loadQuestion();
+    }
+
+    function startTimer() {
+        let timeLeft = 30;
+        document.getElementById("timer").innerText = timeLeft;
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById("timer").innerText = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                nextQuestion();
+            }
+        }, 1000);
+    }
+
+    function loadQuestion() {
+        if (currentQuestion >= questions.length) {
+            submitTest();
+            return;
+        }
+
+        clearInterval(timer);
+        startTimer();
+
+        selectedAnswer = null;
+        document.getElementById("question").innerText = questions[currentQuestion].question;
+
+        const optionsContainer = document.getElementById("options");
+        optionsContainer.innerHTML = "";
+        questions[currentQuestion].options.forEach(option => {
+            const btn = document.createElement("button");
+            btn.className = "option-btn btn btn-warning";
+            btn.innerText = option;
+            btn.onclick = () => selectAnswer(btn, option);
+            optionsContainer.appendChild(btn);
+        });
+
+        document.getElementById("current-q").innerText = currentQuestion + 1;
+        document.getElementById("total-q").innerText = questions.length;
+    }
+
+    function selectAnswer(button, answer) {
+        document.querySelectorAll(".option-btn").forEach(btn => btn.classList.remove("selected"));
+        button.classList.add("selected");
+        userAnswers[currentQuestion] = answer;
+    }
+
+    function nextQuestion() {
+        if (currentQuestion < questions.length - 1) {
+            currentQuestion++;
+            loadQuestion();
+        } else {
+            submitTest();
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            loadQuestion();
+        }
+    }
+
+    function skipQuestion() {
+        nextQuestion();
+    }
+
+    function submitTest() {
+        clearInterval(timer);
+        let resultHTML = "<h2>Test Results</h2><ol>";
+        let score = 0;
+
+        userAnswers.forEach((answer, index) => {
+            let correctAnswer = questions[index].answer;
+            if (answer === correctAnswer) {
+                score++;
+            } else {
+                resultHTML += `<li><b>Q${index + 1}:</b> ${questions[index].question}<br>
+                                <span style="color: red;">Your Answer: ${answer || "Not Answered"}</span><br>
+                                <span style="color: green;">Correct Answer: ${correctAnswer}</span></li><br>`;
+            }
+        });
+
+        resultHTML += `</ol><h1>Your Score: ${score} / ${questions.length}</h1>`;
+        document.getElementById("quizContainer").style.display = "none";
+        document.getElementById("resultPage").innerHTML = resultHTML;
+        document.getElementById("resultPage").style.display = "block";
+    }
+
+    shuffleQuestions();
+</script>
+
+</body>
+</html>
