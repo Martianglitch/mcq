@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Multiplication Tables</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #a3d5ff;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+        }
+        h1 {
+            color: #ff9800;
+        }
+        input {
+            padding: 10px;
+            font-size: 18px;
+            border: 2px solid #ff9800;
+            border-radius: 5px;
+            text-align: center;
+            width: 100px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #ff9800;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #e68900;
+        }
+        .table-container {
+            margin-top: 20px;
+        }
+        .table-item {
+            font-size: 22px;
+            color: #0275d8;
+            margin: 5px 0;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <h1>🦄 Learn Multiplication Tables! 🎉</h1>
+    <div class="container">
+        <p>Enter a Number:</p>
+        <input type="number" id="numberInput" value="2">
+        <button onclick="generateTable()">Show Table</button>
+        <div class="table-container" id="tableContainer"></div>
+    </div>
+    <script>
+        function generateTable() {
+            let number = document.getElementById('numberInput').value;
+            let tableContainer = document.getElementById('tableContainer');
+            tableContainer.innerHTML = '';
+            
+            for (let i = 1; i <= 10; i++) {
+                let item = document.createElement('p');
+                item.className = 'table-item';
+                item.textContent = `${number} × ${i} = ${number * i}`;
+                tableContainer.appendChild(item);
+            }
+        }
+        
+        // Initialize with default table
+        generateTable();
+    </script>
+</body>
+</html>
