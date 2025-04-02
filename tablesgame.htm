@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplication Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #a3d5ff;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+        }
+        h1 {
+            color: #ff9800;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 18px;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        input {
+            border: 2px solid #ff9800;
+            width: 100px;
+        }
+        button {
+            background-color: #ff9800;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e68900;
+        }
+        .game-container {
+            margin-top: 20px;
+        }
+        .game-message {
+            font-size: 22px;
+            color: #0275d8;
+            margin: 5px 0;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .score-board {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            color: #028a0f;
+        }
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: red;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 Multiplication Game! 🚀</h1>
+    <div class="container game-container">
+        <h2>Question <span id="questionCount">1</span>/20</h2>
+        <p id="gameQuestion">Solve: </p>
+        <p class="timer">⏳ Time Left: <span id="timer">15</span>s</p>
+        <input type="number" id="gameAnswer" placeholder="Your answer">
+        <button onclick="checkAnswer()">Submit</button>
+        <p id="gameMessage" class="game-message"></p>
+        <p class="score-board">Score: <span id="score">0</span></p>
+    </div>
+    
+    <script>
+        let num1, num2, correctAnswer;
+        let questionCount = 1;
+        let score = 0;
+        let timer;
+        let timeLeft = 15;
+        
+        function generateQuestion() {
+            if (questionCount > 20) {
+                document.body.innerHTML = `<h1>🎉 Game Over!</h1><p>Your Final Score: ${score}/20</p>`;
+                return;
+            }
+            num1 = Math.floor(Math.random() * 20) + 1;
+            num2 = Math.floor(Math.random() * 20) + 1;
+            correctAnswer = num1 * num2;
+            document.getElementById('gameQuestion').textContent = `Solve: ${num1} × ${num2}`;
+            document.getElementById('gameMessage').textContent = '';
+            document.getElementById('gameAnswer').value = '';
+            document.getElementById('questionCount').textContent = questionCount;
+            document.getElementById('timer').textContent = '15';
+            timeLeft = 15;
+            clearInterval(timer);
+            timer = setInterval(updateTimer, 1000);
+        }
+        
+        function updateTimer() {
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById('gameMessage').textContent = '⏳ Time up! Next question...';
+                document.getElementById('gameMessage').style.color = 'red';
+                setTimeout(() => {
+                    questionCount++;
+                    generateQuestion();
+                }, 2000);
+                return;
+            }
+            document.getElementById('timer').textContent = --timeLeft;
+        }
+        
+        function checkAnswer() {
+            let userAnswer = document.getElementById('gameAnswer').value;
+            let message = document.getElementById('gameMessage');
+            if (parseInt(userAnswer) === correctAnswer) {
+                message.textContent = '🎉 Correct! Well done!';
+                message.style.color = 'green';
+                score++;
+                document.getElementById('score').textContent = score;
+            } else {
+                message.textContent = '❌ Oops! Try again next time!';
+                message.style.color = 'red';
+            }
+            clearInterval(timer);
+            setTimeout(() => {
+                questionCount++;
+                generateQuestion();
+            }, 2000);
+        }
+        
+        // Initialize game
+        generateQuestion();
+    </script>
+</body>
+</html>
