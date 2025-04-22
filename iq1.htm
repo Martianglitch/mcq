@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GK Quiz for Class 4</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        body {
+    background: linear-gradient(90deg, #CDEDF6, #FFFAE5);
+    background-size: 300% 300%;
+    animation: gradientMove 10s infinite alternate;
+    text-align: center;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+/* Background Gradient Animation */
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+.quiz-container {
+    width: 80%;
+    margin: 30px auto;
+    padding: 20px;
+    background: #e3d497;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    animation: bounceIn 0.8s ease-in-out;
+}
+
+/* Bounce In Animation for Quiz Box */
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.question {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #3B82F6;
+}
+
+/* Button Animations */
+.option-btn {
+    padding: 12px;
+    width: 48%;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+    background-color: #7DD3FC;
+    border: 2px solid #C4B5FD;
+    font-family: cursive;
+    color: #1E3A8A;
+}
+
+/* Button Pop on Hover */
+.option-btn:hover {
+    background-color: #A7F3D0;
+    color: #1E3A8A;
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Flash Animation for Selected Button */
+.selected {
+    background-color: #FB7185 !important;
+    color: white;
+    border: 2px solid #F43F5E;
+    animation: flash 0.3s 2;
+}
+
+@keyframes flash {
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+/* Controls and Timer */
+.controls {
+    margin-top: 20px;
+}
+
+.btn {
+    font-size: 24px;
+    padding: 10px 20px;
+    background-color: #7DD3FC;
+    color: #1E3A8A;
+    border: 2px solid #C4B5FD;
+    border-radius: 10px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Button Wiggle on Hover */
+.btn:hover {
+    background-color: #A7F3D0;
+    transform: rotate(-3deg) scale(1.1);
+}
+
+/* Timer */
+.timer {
+    font-size: 26px;
+    font-weight: bold;
+    color: #F87171;
+    animation: pulse 1s infinite alternate;
+}
+
+/* Timer Pulse Effect */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.05);
+    }
+}
+
+.question-number {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+    color: #3B82F6;
+}
+
+/* Submit Button with Wiggle */
+#submitTest {
+    position: sticky;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #FB7185;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    transition: all 0.3s;
+}
+
+/* Wiggle on Hover */
+#submitTest:hover {
+    background-color: #F43F5E;
+    animation: wiggle 0.5s ease-in-out infinite;
+}
+
+/* Wiggle Animation */
+@keyframes wiggle {
+    0%, 100% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    25% {
+        transform: translate(-50%, -50%) rotate(-3deg);
+    }
+    50% {
+        transform: translate(-50%, -50%) rotate(3deg);
+    }
+    75% {
+        transform: translate(-50%, -50%) rotate(-3deg);
+    }
+}
+
+/* Result Page Animation */
+#resultPage {
+    display: none;
+    font-size: 20px;
+    text-align: left;
+    background-color: #efd773;
+    padding: 20px;
+    border-radius: 10px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Fade In Animation for Results */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+<div id="quizContainer" class="quiz-container">
+    <h1 class="text-primary">Daily Reasoning </h1>
+    <hr>
+    <p class="question" id="question"></p>
+    <div class="options" id="options"></div>
+    <p class="mt-3"><h2>Time Left: <span class="timer" id="timer">90</span> sec</h2></p>
+
+    <div class="controls">
+        <button class="btn btn-secondary" onclick="prevQuestion()">Previous</button>
+        <button class="btn btn-danger" onclick="skipQuestion()">Skip</button>
+        <button class="btn btn-primary" onclick="nextQuestion()">Next</button>
+    </div>
+
+    <p class="question-number"><h1>Question <span id="current-q">1</span> of <span id="total-q">50</span></h1></p>
+</div>
+
+<div id="resultPage" class="quiz-container"></div>
+
+<button id="submitTest" onclick="submitTest()">Submit Test</button>
+
+<script>
+    let allQuestions =  
+    [
+    
+  { "question": "Find the odd one out:", "options": ["2", "4", "6", "9"], "answer": "9" },
+  { "question": "Which letter comes next? A, C, E, G, ?", "options": ["H", "I", "J", "K"], "answer": "I" },
+  { "question": "What comes next? 5, 10, 20, 40, ?", "options": ["60", "70", "80", "90"], "answer": "80" },
+  { "question": "Which number is missing? 3, 6, ?, 12", "options": ["7", "9", "8", "10"], "answer": "9" },
+  { "question": "Find the odd one: Pen, Pencil, Eraser, Paper", "options": ["Pen", "Pencil", "Eraser", "Paper"], "answer": "Paper" },
+  { "question": "Complete the pair: Dog : Bark :: Cat : ?", "options": ["Run", "Meow", "Scratch", "Pounce"], "answer": "Meow" },
+  { "question": "If 2 + 3 = 10, 3 + 4 = 21, then 4 + 5 = ?", "options": ["30", "32", "36", "40"], "answer": "36" },
+  { "question": "What comes next? 1, 4, 9, 16, ?", "options": ["20", "24", "25", "36"], "answer": "25" },
+  { "question": "Which is different: Triangle, Square, Circle, Rectangle", "options": ["Triangle", "Square", "Circle", "Rectangle"], "answer": "Circle" },
+  { "question": "Find the missing number: 1, 2, 4, 7, 11, ?", "options": ["14", "15", "16", "17"], "answer": "16" },
+  { "question": "Which one is heavier?", "options": ["Feather", "Rock", "Balloon", "Paper"], "answer": "Rock" },
+  { "question": "If APPLE = 50, then ORANGE = ?", "options": ["60", "70", "80", "90"], "answer": "60" },
+  { "question": "What comes before Saturday?", "options": ["Friday", "Thursday", "Sunday", "Monday"], "answer": "Friday" },
+  { "question": "Find the odd one: Sun, Moon, Star, Rocket", "options": ["Sun", "Moon", "Star", "Rocket"], "answer": "Rocket" },
+  { "question": "Which number is missing? 100, 90, ?, 70", "options": ["80", "85", "95", "75"], "answer": "80" },
+  { "question": "If 5 x 2 = 15, 6 x 2 = 20, then 7 x 2 = ?", "options": ["25", "26", "27", "28"], "answer": "25" },
+  { "question": "Find the odd one: Blue, Red, Yellow, Circle", "options": ["Blue", "Red", "Yellow", "Circle"], "answer": "Circle" },
+  { "question": "Which number comes next? 11, 13, 15, ?", "options": ["16", "17", "18", "19"], "answer": "17" },
+  { "question": "Arrange in order: Elephant, Mouse, Dog, Cat", "options": ["Mouse, Cat, Dog, Elephant", "Elephant, Dog, Cat, Mouse", "Dog, Cat, Mouse, Elephant", "Cat, Dog, Mouse, Elephant"], "answer": "Mouse, Cat, Dog, Elephant" },
+  { "question": "If 3 + 3 = 18, then 4 + 4 = ?", "options": ["24", "20", "22", "26"], "answer": "32" },
+  { "question": "Which one is not a mode of transport?", "options": ["Car", "Bicycle", "Train", "House"], "answer": "House" },
+  { "question": "Find the odd one: Chair, Table, Sofa, Window", "options": ["Chair", "Table", "Sofa", "Window"], "answer": "Window" },
+  { "question": "Which number is missing? 8, 16, 32, ?", "options": ["48", "56", "64", "72"], "answer": "64" },
+  { "question": "Find the odd one: Foot, Hand, Eye, Pen", "options": ["Foot", "Hand", "Eye", "Pen"], "answer": "Pen" },
+  { "question": "Complete the pair: Fish : Water :: Bird : ?", "options": ["Sky", "Tree", "Nest", "Ocean"], "answer": "Sky" },
+  { "question": "What comes next? 2, 3, 5, 7, 11, ?", "options": ["12", "13", "14", "15"], "answer": "13" },
+  { "question": "Which word has a different sound?", "options": ["Cat", "Mat", "Hat", "Dog"], "answer": "Dog" },
+  { "question": "If 2 = B, 3 = C, 4 = D, then 6 = ?", "options": ["F", "G", "H", "E"], "answer": "F" },
+  { "question": "What comes next? Z, Y, X, W, ?", "options": ["U", "V", "T", "S"], "answer": "V" },
+  { "question": "Which one does not belong? Spring, Summer, Monsoon, Pillow", "options": ["Spring", "Summer", "Monsoon", "Pillow"], "answer": "Pillow" },
+  { "question": "Find the missing number: 10, 20, 30, ?, 50", "options": ["35", "40", "45", "42"], "answer": "40" },
+  { "question": "Which one is different: Pen, Book, Chalk, Banana", "options": ["Pen", "Book", "Chalk", "Banana"], "answer": "Banana" },
+  { "question": "If today is Monday, what day will it be after 3 days?", "options": ["Thursday", "Friday", "Wednesday", "Tuesday"], "answer": "Thursday" },
+  { "question": "What is the next number? 1, 3, 6, 10, ?", "options": ["12", "13", "15", "16"], "answer": "15" },
+  { "question": "Find the odd one: Ice, Water, Juice, Stone", "options": ["Ice", "Water", "Juice", "Stone"], "answer": "Stone" },
+  { "question": "Which shape has no corners?", "options": ["Triangle", "Square", "Rectangle", "Circle"], "answer": "Circle" },
+  { "question": "Which does not belong? Gold, Silver, Iron, Bread", "options": ["Gold", "Silver", "Iron", "Bread"], "answer": "Bread" },
+  { "question": "What comes after 19 in odd numbers?", "options": ["21", "22", "20", "23"], "answer": "21" },
+  { "question": "Which one is different? Lion, Tiger, Elephant, Apple", "options": ["Lion", "Tiger", "Elephant", "Apple"], "answer": "Apple" },
+  { "question": "Find the missing number: 100, 90, ?, 70, 60", "options": ["80", "85", "75", "95"], "answer": "80" },
+  { "question": "Which one is not like the others? Car, Bus, Bicycle, Banana", "options": ["Car", "Bus", "Bicycle", "Banana"], "answer": "Banana" },
+  { "question": "Which one is heavier: Ball, Balloon, Feather, Rock", "options": ["Ball", "Balloon", "Feather", "Rock"], "answer": "Rock" },
+  { "question": "Which number comes next? 5, 10, 20, 40, ?", "options": ["50", "60", "80", "90"], "answer": "80" },
+  { "question": "Find the odd one: Monday, Friday, Sunday, June", "options": ["Monday", "Friday", "Sunday", "June"], "answer": "June" },
+  { "question": "Complete the analogy: Sun : Day :: Moon : ?", "options": ["Night", "Light", "Sky", "Shine"], "answer": "Night" },
+  { "question": "What comes after 81 in the pattern: 81, 64, 49, ?", "options": ["36", "30", "28", "40"], "answer": "36" },
+  { "question": "Which is not a bird? Parrot, Crow, Peacock, Rat", "options": ["Parrot", "Crow", "Peacock", "Rat"], "answer": "Rat" },
+  { "question": "Which one is a group of stars?", "options": ["Planet", "Rocket", "Constellation", "Cloud"], "answer": "Constellation" },
+  { "question": "If 9 = 81, 8 = 64, 7 = ?", "options": ["49", "36", "56", "63"], "answer": "49" }
+
+];
+    
+
+    let questions = [];
+    let currentQuestion = 0;
+    let selectedAnswer = null;
+    let userAnswers = [];
+    let timer;
+    
+    function shuffleQuestions() {
+        questions = allQuestions.sort(() => Math.random() - 0.5).slice(0, 50);
+        loadQuestion();
+    }
+
+    function startTimer() {
+        let timeLeft = 30;
+        document.getElementById("timer").innerText = timeLeft;
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById("timer").innerText = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                nextQuestion();
+            }
+        }, 1000);
+    }
+
+    function loadQuestion() {
+        if (currentQuestion >= questions.length) {
+            submitTest();
+            return;
+        }
+
+        clearInterval(timer);
+        startTimer();
+
+        selectedAnswer = null;
+        document.getElementById("question").innerText = questions[currentQuestion].question;
+
+        const optionsContainer = document.getElementById("options");
+        optionsContainer.innerHTML = "";
+        questions[currentQuestion].options.forEach(option => {
+            const btn = document.createElement("button");
+            btn.className = "option-btn btn btn-warning";
+            btn.innerText = option;
+            btn.onclick = () => selectAnswer(btn, option);
+            optionsContainer.appendChild(btn);
+        });
+
+        document.getElementById("current-q").innerText = currentQuestion + 1;
+        document.getElementById("total-q").innerText = questions.length;
+    }
+
+    function selectAnswer(button, answer) {
+        document.querySelectorAll(".option-btn").forEach(btn => btn.classList.remove("selected"));
+        button.classList.add("selected");
+        userAnswers[currentQuestion] = answer;
+    }
+
+    function nextQuestion() {
+        if (currentQuestion < questions.length - 1) {
+            currentQuestion++;
+            loadQuestion();
+        } else {
+            submitTest();
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            loadQuestion();
+        }
+    }
+
+    function skipQuestion() {
+        nextQuestion();
+    }
+
+    function submitTest() {
+        clearInterval(timer);
+        let resultHTML = "<h2>Test Results</h2><ol>";
+        let score = 0;
+
+        userAnswers.forEach((answer, index) => {
+            let correctAnswer = questions[index].answer;
+            if (answer === correctAnswer) {
+                score++;
+            } else {
+                resultHTML += `<li><b>Q${index + 1}:</b> ${questions[index].question}<br>
+                                <span style="color: red;">Your Answer: ${answer || "Not Answered"}</span><br>
+                                <span style="color: green;">Correct Answer: ${correctAnswer}</span></li><br>`;
+            }
+        });
+
+        resultHTML += `</ol><h1>Your Score: ${score} / ${questions.length}</h1>`;
+        document.getElementById("quizContainer").style.display = "none";
+        document.getElementById("resultPage").innerHTML = resultHTML;
+        document.getElementById("resultPage").style.display = "block";
+    }
+
+    shuffleQuestions();
+</script>
+
+</body>
+</html>
